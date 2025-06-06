@@ -26,15 +26,16 @@ class ServiceSeeder extends Seeder
             [
                 'id' => Str::uuid(),
                 'description' => 'Routine oil change and tire rotation.',
-                'status' => 'completed',
+                'status' => 'Completed',
                 'start_date' => '2024-01-15',
+                'end_date' => '2024-01-16',
                 'total_cost' => 112, 
                 'vehicle_id' => $vehicle->id, 
             ],
             [
                 'id' => Str::uuid(),
                 'description' => 'Brake pad replacement and fluid check.',
-                'status' => 'in_progress',
+                'status' => 'On Progress',
                 'start_date' => '2024-03-20',
                 'total_cost' => 0, 
                 'vehicle_id' => $vehicle->id,
@@ -42,7 +43,7 @@ class ServiceSeeder extends Seeder
             [
                 'id' => Str::uuid(),
                 'description' => 'Annual inspection and minor tune-up.',
-                'status' => 'scheduled',
+                'status' => 'On Progress',
                 'start_date' => '2025-07-10',
                 'total_cost' => 0, 
                 'vehicle_id' => $vehicle->id,
