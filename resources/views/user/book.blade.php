@@ -2,7 +2,6 @@
 @section('content')
 
 <style>
-    /* Updated Elegant Fonts */
     @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@100;200;300;400;500;600&display=swap');
     
     .font-montserrat {
@@ -22,7 +21,6 @@
         line-height: 1.6;
     }
     
-    /* Updated Automotive Background */
     .booking-section {
         background: url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-1.2.1&auto=format&fit=crop&w=1800&q=80') no-repeat center center;
         background-size: cover;
