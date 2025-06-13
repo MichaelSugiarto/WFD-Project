@@ -112,6 +112,33 @@
 </head>
 
 <body>
+    @if (session()->has('invalidLogin'))
+        <script>
+            Swal.fire({
+                title: "Error",
+                text: "{{ session('invalidLogin') }}",
+                icon: "error"
+            });
+        </script>
+    @endif
+    @if (session()->has('logout'))
+        <script>
+            Swal.fire({
+                title: "Success",
+                text: "{{ session('logout') }}",
+                icon: "success"
+            });
+        </script>
+    @endif
+    @if (session()->has('guest'))
+        <script>
+            Swal.fire({
+                title: "ERROR",
+                text: "{{ session('guest') }}",
+                icon: "error"
+            });
+        </script>
+    @endif
     <div class="">
         @yield('content')
     </div>

@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_ADMIN_REDIRECT_URL'),
+        'redirect_1' => env('GOOGLE_ADMIN_REDIRECT_URL'),
+        'redirect_2' => env('GOOGLE_USER_REDIRECT_URL'),
+    ],
+
 ];
