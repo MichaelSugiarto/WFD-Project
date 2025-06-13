@@ -9,6 +9,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SparepartController;
 use App\Http\Middleware\AdminLoginMiddleware;
+use App\Http\Controllers\BookingController;
 
 // user
 Route::prefix('user')->name('user.')->group(function () {
@@ -36,6 +37,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::middleware(RoleMiddleware::class . ':Manager,Technician')->group(function () {
             Route::get('/service-history', [ServiceController::class, 'view'])->name('serviceHistory');
+            Route::get('/booking-list', [BookingController::class, 'index'])->name('bookingList');
         });
 
         Route::middleware(RoleMiddleware::class . ':Manager')->group(function () {
