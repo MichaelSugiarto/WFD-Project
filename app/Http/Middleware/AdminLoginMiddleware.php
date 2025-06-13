@@ -16,6 +16,7 @@ class AdminLoginMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if(!(session('email') && session('role'))){
+            $request->session()->put('url.intended', $request->fullUrl());
             return redirect()->route('admin.login')->with('invalidLogin', 'Please Login First');
         }
         return $next($request);

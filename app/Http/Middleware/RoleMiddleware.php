@@ -16,7 +16,7 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next, ... $role): Response
     {
         if(!in_array(session('role'), $role)){
-            return redirect()->back()->with('error', 'You are not have an autorithy to access this page');
+            return redirect()->route('admin.dashboard')->with('error', 'You are not have an autorithy to access this page');
         }
         return $next($request);
     }
