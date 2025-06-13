@@ -8,8 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SparepartController;
-
-
+use App\Http\Middleware\AdminLoginMiddleware;
 
 // user
 Route::prefix('user')->name('user.')->group(function () {
@@ -25,16 +24,19 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [AuthController::class, 'index'])->name('login');
     Route::get('/auth', [AuthController::class, 'googleAuth'])->name('auth');
     Route::get('/processLogin', [AuthController::class, 'processLogin'])->name('process');
-    Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('/', [AdminController::class, 'index'])->name('dashboard');
 
-    Route::middleware(RoleMiddleware::class . ':Manager,Supplier')->group(function () {
-        Route::get('/sparepart', [SparepartController::class, 'view'])->name('allSparepart');
-        Route::post('/store-sparepart', [SparepartController::class, 'storeSparepart'])->name('storeSparepart');
-    });
+    Route::middleware(AdminLoginMiddleware::class)->group(function () {
+        Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+        Route::get('/', [AdminController::class, 'index'])->name('dashboard');
 
-    Route::middleware(RoleMiddleware::class . ':Manager,Technician')->group(function () {
-        Route::get('/service-history', [ServiceController::class, 'view'])->name('serviceHistory');
+        Route::middleware(RoleMiddleware::class . ':Manager,Supplier')->group(function () {
+            Route::get('/sparepart', [SparepartController::class, 'view'])->name('allSparepart');
+            Route::post('/store-sparepart', [SparepartController::class, 'storeSparepart'])->name('storeSparepart');
+        });
+
+        Route::middleware(RoleMiddleware::class . ':Manager,Technician')->group(function () {
+            Route::get('/service-history', [ServiceController::class, 'view'])->name('serviceHistory');
+        });
     });
 });
 
