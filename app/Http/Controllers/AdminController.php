@@ -104,8 +104,30 @@ class AdminController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Admin $admin)
+    public function destroy(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'id' => 'required|string|exists:admins,id',
+        ]);
+
+        try {
+            // Cari admin berdasarkan ID
+            $admin = Admin::find($validated['id']);
+
+            // Hapus admin
+            $admin->delete();
+
+            // Kembalikan respon sukses
+            return response()->json([
+                'success' => true,
+                'message' => 'Admin berhasil dihapus.'
+            ]);
+        } catch (\Exception $e) {
+            // Tangani jika ada error saat proses hapus
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus admin: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

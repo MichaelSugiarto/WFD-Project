@@ -44,6 +44,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/admins', [AdminController::class, 'allAdmins'])->name('all');
             Route::post('/admins', [AdminController::class, 'store'])->name('storeAdmin');
             Route::post('/admins/update', [AdminController::class, 'update'])->name('updateAdmin');
+            Route::post('/admins/delete', [AdminController::class, 'destroy'])->name('deleteAdmin');
         });
     });
 });

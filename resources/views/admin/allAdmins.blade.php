@@ -127,6 +127,7 @@
                     action: `
                         <div class="w-full flex flex-row gap-2 justify-center">
                             <button class="editAdminBtn py-2 px-4 bg-yellow-400 rounded-md" data-id="${item.id}" data-name="${item.name}" data-email="${item.email}" data-role="${item.role.id}">Edit</button>
+                            <button class="py-2 px-4 bg-red-400 rounded-md" data-id="${item.id}" onclick="deleteAdmin(this)">Delete</button>
                         </div>
                     `,
                 };
@@ -200,5 +201,103 @@
         document.getElementById('email_edit').value = "";
         document.getElementById('role_edit').value = "";
     });
+
+    function deleteAdmin(element){
+        Swal.fire({
+            title: "Are you sure want to delete this member?",
+            text: "This action can't be revert",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Confirm",
+            customClass: {
+                confirmButton: 'green',
+                cancelButton: 'red',
+            },
+            didOpen: () => {
+                document.querySelector('.swal2-container').style.zIndex = "9999";
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('admin.deleteAdmin') }}",
+                    data: JSON.stringify({
+                        id: element.dataset.id,
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    }),
+                    processData: false,
+                    contentType: 'application/json',
+                    cache: false,
+                    success: async function(response) {
+                        if (response.success) {
+                            await Swal.fire({
+                                title: "Success!",
+                                text: response.message,
+                                icon: "success",
+                                confirmButtonText: "OK",
+                                didOpen: () => {
+                                    document.querySelector('.swal2-container').style
+                                        .zIndex = "9999";
+                                }
+                            });
+                            window.location.reload();
+                        } else {
+                            await Swal.fire({
+                                icon: "error",
+                                title: "Oops...",
+                                text: response.message,
+                                didOpen: () => {
+                                    document.querySelector('.swal2-container').style
+                                        .zIndex = "9999";
+                                }
+                            });
+                        }
+                    },
+                    error: async function(xhr, textStatus, errorThrown) {
+                        if (xhr.status === 422) {
+                            const errors = xhr.responseJSON.errors;
+                            let errorMessage = '';
+                            for (let key in errors) {
+                                errorMessage += errors[key].join(' ') +
+                                    '\n'; // Collect all error messages
+                            }
+                            await Swal.fire({
+                                title: 'Deletion Error!',
+                                text: errorMessage,
+                                icon: 'error',
+                                confirmButtonText: 'OK',
+                                didOpen: () => {
+                                    document.querySelector('.swal2-container').style
+                                        .zIndex = "9999";
+                                }
+                            });
+                        } else {
+                            await Swal.fire({
+                                title: 'Oops!',
+                                text: 'Something went wrong: ' + xhr.statusText,
+                                icon: 'error',
+                                confirmButtonText: 'OK',
+                                didOpen: () => {
+                                    document.querySelector('.swal2-container').style
+                                        .zIndex = "9999";
+                                }
+                            });
+                        }
+                    }
+                })
+            } else {
+                // User canceled the submission
+                Swal.fire({
+                    title: "Cancelled!",
+                    text: "Your data was not submitted.",
+                    icon: "info",
+                    confirmButtonText: "OK",
+                    didOpen: () => {
+                        document.querySelector('.swal2-container').style.zIndex = "9999";
+                    }
+                });
+            }
+        });
+    }
 </script>
 @endsection
