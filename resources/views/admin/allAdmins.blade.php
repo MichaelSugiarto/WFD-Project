@@ -69,6 +69,46 @@
         </form>
     </div>
 </div>
+
+<!-- Modal for editing Admin -->
+<div id="editAdminModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-[1100]">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-96 relative">
+        <h2 class="text-lg font-bold mb-4">Add Admin</h2>
+        <form method="POST" action="{{ route('admin.updateAdmin') }}">
+            @csrf
+            <input id="id_edit" name="id" type="text" hidden>
+            <div class="mb-4">
+                <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                <input type="text" name="name" id="name_edit"
+                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                    required>
+            </div>
+            <div class="mb-4">
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" name="email" id="email_edit"
+                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                    required>
+            </div>
+            <div class="mb-4">
+                <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+                <select name="role" id="role_edit"
+                    class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                    required>
+                    <option value="">Select any role</option>
+                    @foreach ($roles as $r)
+                        <option value="{{ $r->id }}">{{ $r->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="flex justify-end space-x-2">
+                <button type="button" id="closeEditModalBtn"
+                    class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Close</button>
+                <button type="submit"
+                    class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Edit</button>
+            </div>
+        </form>
+    </div>
+</div>
 @endsection
 
 @section('script')
@@ -84,6 +124,11 @@
                     name: item.name,
                     email: item.email,
                     role: item.role.name,
+                    action: `
+                        <div class="w-full flex flex-row gap-2 justify-center">
+                            <button class="editAdminBtn py-2 px-4 bg-yellow-400 rounded-md" data-id="${item.id}" data-name="${item.name}" data-email="${item.email}" data-role="${item.role.id}">Edit</button>
+                        </div>
+                    `,
                 };
             });
 
@@ -94,7 +139,8 @@
                         { label: "No.", field: "no" },
                         { label: "Name", field: "name", sort: true },
                         { label: "Email", field: "email", sort: true },
-                        { label: "Role", field: "role", sort: true }
+                        { label: "Role", field: "role", sort: true },
+                        { label: "Action", field: "action" },
                     ],
                     rows: rows,
                 },
@@ -135,6 +181,24 @@
 
     document.getElementById('closeModalBtn').addEventListener('click', () => {
         document.getElementById('addAdminModal').classList.add('hidden');
+    });
+
+    document.querySelectorAll('.editAdminBtn').forEach(button => {
+        button.addEventListener('click', () => {
+            document.getElementById('editAdminModal').classList.remove('hidden');
+            document.getElementById('id_edit').value = button.dataset.id;
+            document.getElementById('name_edit').value = button.dataset.name;
+            document.getElementById('email_edit').value = button.dataset.email;
+            document.getElementById('role_edit').value = button.dataset.role;
+        });
+    });
+
+    document.getElementById('closeEditModalBtn').addEventListener('click', () => {
+        document.getElementById('editAdminModal').classList.add('hidden');
+        document.getElementById('id_edit').value = "";
+        document.getElementById('name_edit').value = "";
+        document.getElementById('email_edit').value = "";
+        document.getElementById('role_edit').value = "";
     });
 </script>
 @endsection

@@ -80,7 +80,25 @@ class AdminController extends Controller
      */
     public function update(Request $request, Admin $admin)
     {
-        //
+        $request->validate([
+            'id' => 'required',
+            'name' => 'required|string|max:255',
+            'role' => 'required',
+            'email' => 'required|email',
+        ]);
+
+        $id = $request->id;
+        $name = $request->name;
+        $email = $request->email;
+        $role = $request->role;
+
+        $admin = Admin::where('id', $id)->first();
+        $admin->name = $name;
+        $admin->email = $email;
+        $admin->role_id = $role;
+        $admin->save();
+
+        return redirect()->back()->with('success', 'Admin edited successfully!');
     }
 
     /**
