@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call(VehicleSeeder::class);
         $this->call(ServiceSeeder::class);
         $this->call(ServiceSparepartSeeder::class);
-        
+        $this->call(RoleSeeder::class);
+        $this->call(AdminSeeder::class);
     }
 }
