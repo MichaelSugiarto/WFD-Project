@@ -37,6 +37,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::middleware(RoleMiddleware::class . ':Manager,Technician')->group(function () {
             Route::get('/service-history', [ServiceController::class, 'view'])->name('serviceHistory');
         });
+
+        Route::middleware(RoleMiddleware::class . ':Manager')->group(function () {
+            Route::get('/admins', [AdminController::class, 'allAdmins'])->name('all');
+            Route::post('/admins', [AdminController::class, 'store'])->name('storeAdmin');
+        });
     });
 });
 

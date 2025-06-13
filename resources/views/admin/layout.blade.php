@@ -122,6 +122,16 @@
         </script>
     @endif
 
+    @if ($errors->any())
+        <script>
+            Swal.fire({
+                title: "Error",
+                text: "{{ $errors->first() }}",
+                icon: "error"
+            });
+        </script>
+    @endif
+
     <!-- Sidenav -->
     <nav id="sidenav-8"
         class=" fixed left-0 top-0 z-[1035] h-full min-h-[100vh] w-60 -translate-x-full overflow-hidden bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 dark:bg-zinc-800 invisible md:visible"
@@ -166,6 +176,24 @@
                         </svg>
                     </span>
                     <span >Service History</span>
+                </a>
+            </li>
+            @endif
+            @if(in_array(session('role'), ['Manager']))
+            <li class="relative pt-6">
+                <span class="px-6 py-4 text-[0.6rem] font-bold uppercase text-black dark:text-gray-400">Manager</span>
+                <a class="flex cursor-pointer items-center truncate rounded-[5px] px-6 py-[0.45rem] text-[0.85rem] text-black outline-none transition duration-300 ease-linear hover:bg-slate-50 hover:text-inherit hover:outline-none focus:bg-slate-50 focus:text-inherit focus:outline-none active:bg-slate-50 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none dark:text-gray-300 dark:hover:bg-white/10 dark:focus:bg-white/10 dark:active:bg-white/10"
+                    data-te-sidenav-link-ref href="{{ route('admin.all') }}">
+                    <span
+                        class="mr-4 [&>svg]:h-3.5 [&>svg]:w-3.5
+                    [&>svg]:text-black dark:[&>svg]:text-black">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 448 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                            <path
+                                d="M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464l349.5 0c-8.9-63.3-63.3-112-129-112l-91.4 0c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3z" />
+                        </svg>
+                    </span>
+                    <span >Admins</span>
                 </a>
             </li>
             @endif

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\Admin;
 use Illuminate\Http\Request;
 
@@ -13,6 +14,17 @@ class AdminController extends Controller
     public function index()
     {
         return view('admin.dashboard')->with(['title' => 'Dashboard']);
+    }
+
+    public function allAdmins()
+    {
+        $admins = Admin::with(['role'])->get();
+        $roles = Role::get();
+        return view('admin.allAdmins')->with([
+            'title' => 'List Admin',
+            'admins' => $admins,
+            'roles' => $roles,
+        ]);
     }
 
     /**
@@ -28,7 +40,23 @@ class AdminController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'role' => 'required',
+            'email' => 'required|email',
+        ]);
+
+        $name = $request->name;
+        $email = $request->email;
+        $role = $request->role;
+
+        Admin::create([
+            'name' => $name,
+            'email' => $email,
+            'role_id' => $role,
+        ]);
+
+        return redirect()->back()->with('success', 'Admin added successfully!');
     }
 
     /**
