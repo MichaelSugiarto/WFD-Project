@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\User;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -8,6 +8,15 @@ use App\Models\Booking;
 
 class BookingController extends Controller
 {
+    public function index()
+    {
+        $data = [
+            'bookings' => Booking::get(),
+            'title' => 'Booking List',
+        ];
+        return view('admin.allBooking', $data);
+    }
+
     public function create()
     {
         return view('user.book');
