@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Booking;
+use Carbon\Carbon;
 
 class BookingController extends Controller
 {
@@ -28,12 +29,13 @@ class BookingController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:20',
-            'vehicle_make' => 'required|string|max:255',
             'vehicle_model' => 'required|string|max:255',
             'service_type' => 'required|string|max:255',
             'appointment_date' => 'required|date',
             'notes' => 'nullable|string',
         ]);
+
+        $validated['appointment_date'] = Carbon::parse($validated['appointment_date']);
 
         Booking::create($validated);
 

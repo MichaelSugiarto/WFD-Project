@@ -86,44 +86,51 @@
                                 @csrf
                                 <div class="mb-6">
                                     <label for="name" class="block font-cormorant text-lg mb-2">Full Name</label>
-                                    <input type="text" id="name" name="name" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gold" required>
+                                    <input type="text" id="name" name="name" value="{{ old('name') }}" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gold" required>
+                                    @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
                                 
                                 <div class="mb-6">
                                     <label for="email" class="block font-cormorant text-lg mb-2">Email</label>
-                                    <input type="email" id="email" name="email" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gold" required>
+                                    <input type="email" id="email" name="email" value="{{ old('email') }}" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gold" required>
+                                    @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
                                 
                                 <div class="mb-6">
                                     <label for="phone" class="block font-cormorant text-lg mb-2">Phone Number</label>
-                                    <input type="tel" id="phone" name="phone" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gold" required>
+                                    <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gold" required>
+                                    @error('phone') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
                                 
                                 <div class="mb-6">
                                     <label for="vehicle_model" class="block font-cormorant text-lg mb-2">Vehicle Model</label>
-                                    <input type="text" id="vehicle_model" name="vehicle_model" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gold" required>
+                                    <input type="text" id="vehicle_model" name="vehicle_model" value="{{ old('vehicle_model') }}" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gold" required>
+                                    @error('vehicle_model') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
                                 
                                 <div class="mb-6">
                                     <label for="service_type" class="block font-cormorant text-lg mb-2">Service Type</label>
                                     <select id="service_type" name="service_type" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gold" required>
                                         <option value="">Select a service</option>
-                                        <option value="Maintenance">Regular Maintenance</option>
-                                        <option value="Diagnostics">Diagnostics</option>
-                                        <option value="Performance Tuning">Performance Tuning</option>
-                                        <option value="Detailing">Premium Detailing</option>
-                                        <option value="Repair">Mechanical Repair</option>
+                                        <option value="Maintenance" {{ old('service_type') == 'Maintenance' ? 'selected' : '' }}>Regular Maintenance</option>
+                                        <option value="Diagnostics" {{ old('service_type') == 'Diagnostics' ? 'selected' : '' }}>Diagnostics</option>
+                                        <option value="Performance Tuning" {{ old('service_type') == 'Performance Tuning' ? 'selected' : '' }}>Performance Tuning</option>
+                                        <option value="Detailing" {{ old('service_type') == 'Detailing' ? 'selected' : '' }}>Premium Detailing</option>
+                                        <option value="Repair" {{ old('service_type') == 'Repair' ? 'selected' : '' }}>Mechanical Repair</option>
                                     </select>
+                                    @error('service_type') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
                                 
                                 <div class="mb-6">
                                     <label for="appointment_date" class="block font-cormorant text-lg mb-2">Preferred Date</label>
-                                    <input type="date" id="appointment_date" name="appointment_date" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gold" required>
+                                    <input type="date" id="appointment_date" name="appointment_date" value="{{ old('appointment_date') }}" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gold" required>
+                                    @error('appointment_date') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
                                 
                                 <div class="mb-6">
                                     <label for="notes" class="block font-cormorant text-lg mb-2">Additional Notes</label>
-                                    <textarea id="notes" name="notes" rows="3" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gold"></textarea>
+                                    <textarea id="notes" name="notes" rows="3" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gold">{{ old('notes') }}</textarea>
+                                    @error('notes') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
                                 
                                 <button type="submit" class="btn-gold py-3 px-8 rounded font-montserrat text-lg w-full">Book Appointment</button>

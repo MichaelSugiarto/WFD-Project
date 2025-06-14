@@ -15,7 +15,7 @@ use App\Http\Controllers\BookingController;
 Route::prefix('user')->name('user.')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('home');
     Route::get('/book', [UserController::class, 'book'])->name('book');
-    Route::post('/book', [UserController::class, 'storeBooking'])->name('booking.store');
+    Route::post('/book', [BookingController::class, 'store'])->name('booking.store');
     Route::get('/history', [UserController::class, 'history'])->name('history');
 });
 

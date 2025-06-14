@@ -18,4 +18,8 @@ class Booking extends Model
         'appointment_date',
         'notes'
     ];
+
+    protected $casts = [
+        'appointment_date' => 'datetime'
+    ];
 }

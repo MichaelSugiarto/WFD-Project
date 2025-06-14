@@ -30,14 +30,17 @@ class UserController extends Controller
             'phone' => 'required|string|max:20',
             'vehicle_make' => 'required|string|max:255',
             'vehicle_model' => 'required|string|max:255',
-            'service_type' => 'required|string|in:Maintenance,Diagnostics,Performance Tuning,Detailing,Repair',
+            'service_type' => 'required|string|max:255',
             'appointment_date' => 'required|date|after_or_equal:today',
-            'notes' => 'nullable|string',
+            'notes' => 'nullable|string'
         ]);
 
-        Booking::create($validated);
-
-        return redirect()->route('user.history')->with('success', 'Booking created successfully!');
+        try {
+            Booking::create($validated);
+            return redirect()->route('user.history')->with('success', 'Booking created successfully!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to create booking. Please try again.')->withInput();
+        }
     }
 
     public function history()
