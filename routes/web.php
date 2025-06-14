@@ -37,6 +37,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::middleware(RoleMiddleware::class . ':Manager,Technician')->group(function () {
             Route::get('/service-history', [ServiceController::class, 'view'])->name('serviceHistory');
+            Route::post('/service-history', [ServiceController::class, 'edit'])->name('service.edit');
             Route::get('/booking-list', [BookingController::class, 'index'])->name('bookingList');
         });
 
