@@ -101,11 +101,35 @@
                                     <input type="tel" id="phone" name="phone" value="{{ old('phone') }}" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gold" required>
                                     @error('phone') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
+
+                                <div class="mb-6">
+                                    <label for="address" class="block font-cormorant text-lg mb-2">Address</label>
+                                    <input type="tel" id="address" name="address" value="{{ old('address') }}" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gold" required>
+                                    @error('address') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                </div>
                                 
+                                <div class="mb-6">
+                                    <label for="vehicle_brand" class="block font-cormorant text-lg mb-2">Vehicle Brand</label>
+                                    <input type="text" id="vehicle_brand" name="vehicle_brand" value="{{ old('vehicle_brand') }}" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gold" required>
+                                    @error('vehicle_brand') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                </div>
+
+                                <div class="mb-6">
+                                    <label for="vehicle_year_production" class="block font-cormorant text-lg mb-2">Vehicle Year Production</label>
+                                    <input type="text" id="vehicle_year_production" name="vehicle_year_production" value="{{ old('vehicle_year_production') }}" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gold" required>
+                                    @error('vehicle_year_production') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                </div>
+
                                 <div class="mb-6">
                                     <label for="vehicle_model" class="block font-cormorant text-lg mb-2">Vehicle Model</label>
                                     <input type="text" id="vehicle_model" name="vehicle_model" value="{{ old('vehicle_model') }}" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gold" required>
                                     @error('vehicle_model') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                </div>
+
+                                <div class="mb-6">
+                                    <label for="license_plate" class="block font-cormorant text-lg mb-2">License Plate</label>
+                                    <input type="text" id="license_plate" name="license_plate" value="{{ old('license_plate') }}" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-gold" required>
+                                    @error('license_plate') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
                                 
                                 <div class="mb-6">

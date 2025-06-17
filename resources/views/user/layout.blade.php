@@ -82,12 +82,12 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background: linear-gradient(360deg, #e76020, #ee892f, transparent);
-            border-radius: 30px;
+        background: linear-gradient(360deg, #333333, #888888, transparent); /* Dark gray to light gray/silver */
+        border-radius: 30px;
         }
 
         ::-webkit-scrollbar-track {
-            background: linear-gradient(360deg, #325434, #6e896a, transparent);
+        background: #111111; /* Very dark gray to medium gray */
         }
 
         html {

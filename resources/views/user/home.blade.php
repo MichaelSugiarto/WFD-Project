@@ -95,11 +95,11 @@
 <!-- All your existing HTML content remains exactly the same -->
 <section class="hero-section">
     <div class="hero-overlay flex items-center">
-        <div class="container mx-auto px-4 text-white">
-            <div class="max-w-2xl">
+        <div class="container mx-auto px-10 text-white pl-12">
+            <div class="max-w-xl">
                 <h1 class="font-cinzel text-5xl md:text-6xl font-bold mb-6">Premium Automotive Care</h1>
                 <p class="font-cormorant text-xl mb-8">Experience unparalleled service for your luxury vehicle with our expert technicians and state-of-the-art facilities.</p>
-                <a href="{{ route('user.book') }}" class="btn-gold py-3 px-8 rounded font-montserrat text-lg inline-block">Book Now</a>
+                <a href="{{ route('user.book') }}" class="bg-gray-800 border border-white py-2 px-8 rounded font-montserrat text-lg inline-block">Book Now</a>
             </div>
         </div>
     </div>
@@ -147,7 +147,7 @@
     </div>
 </section>
 
-<section class="py-20 bg-gray-800 text-white">
+<section class="py-20 bg-gray-900 text-white">
     <div class="container mx-auto px-4">
         <div class="flex flex-col md:flex-row items-center">
             <div class="md:w-1/2 mb-10 md:mb-0 md:pr-10">
@@ -157,7 +157,6 @@
                 <h2 class="font-cinzel text-4xl mb-6">About Our Workshop</h2>
                 <p class="font-cormorant text-lg mb-6">With over 20 years of experience in luxury automotive care, our workshop is equipped with the latest technology and staffed by certified technicians who are passionate about cars.</p>
                 <p class="font-cormorant text-lg mb-8">We pride ourselves on attention to detail and delivering exceptional service that meets the highest standards of the automotive industry.</p>
-                <a href="#" class="btn-gold py-3 px-8 rounded font-montserrat text-lg inline-block">Learn More</a>
             </div>
         </div>
     </div>
@@ -221,5 +220,20 @@
         <a href="{{ route('user.book') }}" class="btn-gold py-3 px-8 rounded font-montserrat text-lg inline-block">Schedule Service</a>
     </div>
 </section>
+
+@endsection
+
+@section('script')
+
+<script>
+    // LENIS SMOOTH SCROLL
+    const lenis = new Lenis()
+    lenis.on('scroll', (e) => {})
+    lenis.on('scroll', ScrollTrigger.update)
+    gsap.ticker.add((time) => {
+        lenis.raf(time * 1000)
+    })
+    gsap.ticker.lagSmoothing(0)
+</script>
 
 @endsection

@@ -94,7 +94,7 @@
         
         <div class="bg-white rounded-lg shadow-md overflow-hidden">
             <div class="p-6 border-b">
-                <h3 class="font-cinzel text-2xl mb-6 text-gold">Upcoming Appointments</h3>
+                <h3 class="font-cinzel text-2xl mb-6 text-black">Upcoming Appointments</h3>
                 
                 @if($upcomingAppointments->count() > 0)
                     @foreach($upcomingAppointments as $appointment)
@@ -111,7 +111,6 @@
                             </div>
                             <div class="flex flex-col items-end">
                                 <span class="status-pending font-montserrat font-semibold mb-2">Upcoming</span>
-                                <a href="#" class="text-gold font-cormorant underline">View Details</a>
                             </div>
                         </div>
                     </div>
@@ -122,7 +121,7 @@
             </div>
             
             <div class="p-6">
-                <h3 class="font-cinzel text-2xl mb-6 text-gold">Service History</h3>
+                <h3 class="font-cinzel text-2xl mb-6 text-black">Service History</h3>
                 
                 @if($pastAppointments->count() > 0)
                     @foreach($pastAppointments as $appointment)
