@@ -15,7 +15,6 @@ class BookingController extends Controller
     public function index()
     {
         $data = [
-            'bookings' => Booking::get(),
             'title' => 'Booking List',
         ];
         return view('admin.allBooking', $data);

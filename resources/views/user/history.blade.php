@@ -91,68 +91,6 @@
             <h2 class="font-cinzel text-3xl">Your Appointments</h2>
             <a href="{{ route('user.book') }}" class="btn-gold py-2 px-6 rounded font-montserrat">Book New Service</a>
         </div>
-        
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-            <div class="p-6 border-b">
-                <h3 class="font-cinzel text-2xl mb-6 text-black">Upcoming Appointments</h3>
-                
-                @if($upcomingAppointments->count() > 0)
-                    @foreach($upcomingAppointments as $appointment)
-                    <div class="history-card bg-white rounded mb-4 p-6 shadow-sm">
-                        <div class="flex flex-col md:flex-row md:justify-between md:items-center">
-                            <div class="mb-4 md:mb-0">
-                                <h4 class="font-cinzel text-xl mb-2">{{ $appointment->service_type }}</h4>
-                                <p class="font-cormorant">
-                                    <span class="font-semibold">Vehicle:</span> {{ $appointment->vehicle_make }} {{ $appointment->vehicle_model }}
-                                </p>
-                                <p class="font-cormorant">
-                                    <span class="font-semibold">Scheduled:</span> {{ $appointment->appointment_date->format('F j, Y') }}
-                                </p>
-                            </div>
-                            <div class="flex flex-col items-end">
-                                <span class="status-pending font-montserrat font-semibold mb-2">Upcoming</span>
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                @else
-                    <p class="font-cormorant text-gray-600">No upcoming appointments found.</p>
-                @endif
-            </div>
-            
-            <div class="p-6">
-                <h3 class="font-cinzel text-2xl mb-6 text-black">Service History</h3>
-                
-                @if($pastAppointments->count() > 0)
-                    @foreach($pastAppointments as $appointment)
-                    <div class="history-card bg-white rounded mb-4 p-6 shadow-sm">
-                        <div class="flex flex-col md:flex-row md:justify-between md:items-center">
-                            <div class="mb-4 md:mb-0">
-                                <h4 class="font-cinzel text-xl mb-2">{{ $appointment->service_type }}</h4>
-                                <p class="font-cormorant">
-                                    <span class="font-semibold">Vehicle:</span> {{ $appointment->vehicle_make }} {{ $appointment->vehicle_model }}
-                                </p>
-                                <p class="font-cormorant">
-                                    <span class="font-semibold">Date:</span> {{ $appointment->appointment_date->format('F j, Y') }}
-                                </p>
-                                @if($appointment->notes)
-                                <p class="font-cormorant">
-                                    <span class="font-semibold">Notes:</span> {{ $appointment->notes }}
-                                </p>
-                                @endif
-                            </div>
-                            <div class="flex flex-col items-end">
-                                <span class="status-completed font-montserrat font-semibold mb-2">Completed</span>
-                                <a href="#" class="text-gold font-cormorant underline">View Details</a>
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                @else
-                    <p class="font-cormorant text-gray-600">No past service records found.</p>
-                @endif
-            </div>
-        </div>
     </div>
 </section>
 
