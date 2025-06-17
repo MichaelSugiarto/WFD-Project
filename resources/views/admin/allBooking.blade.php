@@ -27,6 +27,12 @@
     </div>
 </div>
 
+<div id="editHistoryModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50">
+    <div id='modal-wrapper' class="bg-white rounded-lg shadow-lg p-6 w-96 relative">
+        
+    </div>
+</div>
+
 @endsection
 
 @section('script')
@@ -37,8 +43,8 @@
             customDatatable.innerHTML = '';
 
             const rows = dataBookings.map((item, index) => {
-                const date = new Date(item.appointment_date);
-                const formattedDate = date.toLocaleDateString('id-ID', {
+                let date = new Date(item.start_date);
+                const startDate = date.toLocaleDateString('id-ID', {
                     day: 'numeric',
                     month: 'long',
                     year: 'numeric'
@@ -46,13 +52,14 @@
 
                 return {
                     no: index + 1,
-                    name: item.name,
-                    email: item.email,
-                    phone: item.phone,
-                    vehicle_model: item.vehicle_model,
-                    service_type: item.service_type,
-                    appointment_date: formattedDate,
-                    notes: item.notes,
+                    name: item.vehicle && item.vehicle.user ? item.vehicle.user.name : 'N/A',
+                    phone: item.vehicle.user.telephone_number ?? 'N/A',
+                    vehicle: item.vehicle ? `${item.vehicle.brand} ${item.vehicle.model} (${item.vehicle.license_plate})` : 'N/A',
+                    start_date: startDate,
+                    description: item.description,
+                    action: `<button id="editHistory" onclick="openModal('${item.id}')" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
+                                Edit
+                            </button>`
                 };
             });
 
@@ -62,12 +69,11 @@
                     columns: [
                         { label: "No.", field: "no" },
                         { label: "Name", field: "name", sort: true },
-                        { label: "Email", field: "email" },
-                        { label: "Phone", field: "phone" },
-                        { label: "Vehicle Model", field: "vehicle_model" },
-                        { label: "Service Type", field: "service_type" },
-                        { label: "Appointment Date", field: "appointment_date", sort: true },
-                        { label: "Notes", field: "notes" },
+                        { label: "Phone Number", field: "phone" },
+                        { label: "Vehicle", field: "vehicle" },
+                        { label: "Appointment Date", field: "start_date", sort: true },
+                        { label: "Description", field: "description" },
+                        { label: "Action", field: "action" },
                     ],
                     rows: rows,
                 },
@@ -102,6 +108,109 @@
         }
     }
 
-    display(@json($bookings));
+    display(@json($services));
+</script>
+<script>
+    function openModal(id){
+        const data = @json($services);
+        const sparepartOptions = @json($spareparts);
+        // Find the service where the id matches
+        const selectedService = data.find(service => service.id === id);
+
+        let el = document.getElementById('modal-wrapper');
+        el.innerHTML = '';
+
+        function generateSparepartRow(sparepartId = '', quantity = '', unit_price = '') {
+            const options = sparepartOptions.map(sp => `
+                <option value="${sp.id}" ${sp.id === sparepartId ? 'selected' : ''}>
+                    ${sp.name}
+                </option>
+            `).join('');
+
+            return `
+            <div class="flex space-x-2 mb-4 sparepart-row items-start">
+                <div class="w-2/3">
+                    <label class="block text-sm font-medium mb-1">Sparepart</label>
+                    <select name="spareparts[]" class="border rounded px-2 py-1 w-full">
+                        ${options}
+                    </select>
+                </div>
+                <div class="w-1/3">
+                    <label class="block text-sm font-medium mb-1">Quantity</label>
+                    <input type="number" name="quantities[]" class="border rounded px-2 py-1 w-full" value="${quantity}" min="1">
+                </div>
+                <div class="w-1/3">
+                    <label class="block text-sm font-medium mb-1">Unit Price</label>
+                    <input type="number" name="unit_prices[]" class="border rounded px-2 py-1 w-full" value="${unit_price}" min="1">
+                </div>
+                <div class="flex items-end">
+                    <button type="button" class="remove-row text-red-500 ml-2 mb-1">❌</button>
+                </div>
+            </div>
+            `;
+        }
+
+        let sparepartsHTML = '';
+        selectedService.spareparts.forEach(sp => {
+            sparepartsHTML += generateSparepartRow(sp.pivot.sparepart_id, sp.pivot.quantity, sp.pivot.unit_price);
+        });
+
+        el.innerHTML +=`
+        <h2 class="text-lg font-bold mb-4">Edit</h2>
+        <form method="POST" action="{{ route('admin.service.edit') }}">
+            @csrf
+            <input type='hidden' name='service_id' value='${id}'>
+            <div class="mb-4">
+                <label class="block font-medium mb-1">Status</label>
+                <div class="flex items-center space-x-4">
+                    <label class="flex items-center space-x-1">
+                        <input type="radio" name="status" value="On Progress" 
+                            ${selectedService.status === 'On Progress' ? 'checked' : ''}>
+                        <span>On Progress</span>
+                    </label>
+                    <label class="flex items-center space-x-1">
+                        <input type="radio" name="status" value="Completed" 
+                            ${selectedService.status === 'Completed' ? 'checked' : ''}>
+                        <span>Completed</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="block font-medium mb-1">Spare Parts</label>
+                <div id="spareparts-container">
+                    ${sparepartsHTML}
+                </div>
+                <button type="button" id="addSparepartBtn"
+                    class="mt-2 text-blue-500 hover:underline">+ Add Spare Part</button>
+            </div>
+
+            <div class="flex justify-end space-x-2">
+                <button type="button" id="closeModalBtn"
+                    class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Close</button>
+                <button type="submit"
+                    class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Add</button>
+            </div>
+        </form>
+        `
+
+        const modal = document.getElementById('editHistoryModal');
+        modal.classList.remove('hidden');
+
+        document.getElementById('closeModalBtn').addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+
+        document.getElementById('addSparepartBtn').addEventListener('click', () => {
+            const container = document.getElementById('spareparts-container');
+            container.insertAdjacentHTML('beforeend', generateSparepartRow());
+        });
+
+        el.addEventListener('click', function (e) {
+            if (e.target.classList.contains('remove-row')) {
+                e.target.closest('.sparepart-row').remove();
+            }
+        });
+    }
 </script>
 @endsection

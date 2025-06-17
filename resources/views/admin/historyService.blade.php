@@ -72,9 +72,9 @@
                     vehicle: service.vehicle ? `${service.vehicle.brand} ${service.vehicle.model} (${service.vehicle.license_plate})` : 'N/A',
                     user_name: service.vehicle && service.vehicle.user ? service.vehicle.user.name : 'N/A', // Access user name
                     spareparts_used: sparepartsList, // HTML string for spareparts,
-                    actions: `<button id="editHistory" onclick="openModal('${service.id}')" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
-                                Edit
-                            </button>`
+                    // actions: `<button id="editHistory" onclick="openModal('${service.id}')" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
+                    //             Edit
+                    //         </button>`
                 };
             });
 
@@ -93,7 +93,7 @@
                         { label: "Vehicle", field: "vehicle", sort: true }, // Vehicle details
                         { label: "Spareparts Used", field: "spareparts_used", html: true }, // Render HTML for spareparts
                         // Add more columns as needed, e.g., Actions
-                        { label: "Actions", field: "actions" }
+                        // { label: "Actions", field: "actions" }
                     ],
                     rows: rows,
                 },
@@ -127,106 +127,106 @@
 
     display(@json($services));
 
-    function openModal(id){
-        const data = @json($services);
-        const sparepartOptions = @json($spareparts);
-        // Find the service where the id matches
-        const selectedService = data.find(service => service.id === id);
+    // function openModal(id){
+    //     const data = @json($services);
+    //     const sparepartOptions = @json($spareparts);
+    //     // Find the service where the id matches
+    //     const selectedService = data.find(service => service.id === id);
 
-        let el = document.getElementById('modal-wrapper');
-        el.innerHTML = '';
+    //     let el = document.getElementById('modal-wrapper');
+    //     el.innerHTML = '';
 
-        function generateSparepartRow(sparepartId = '', quantity = '', unit_price = '') {
-            const options = sparepartOptions.map(sp => `
-                <option value="${sp.id}" ${sp.id === sparepartId ? 'selected' : ''}>
-                    ${sp.name}
-                </option>
-            `).join('');
+    //     function generateSparepartRow(sparepartId = '', quantity = '', unit_price = '') {
+    //         const options = sparepartOptions.map(sp => `
+    //             <option value="${sp.id}" ${sp.id === sparepartId ? 'selected' : ''}>
+    //                 ${sp.name}
+    //             </option>
+    //         `).join('');
 
-            return `
-            <div class="flex space-x-2 mb-4 sparepart-row items-start">
-                <div class="w-2/3">
-                    <label class="block text-sm font-medium mb-1">Sparepart</label>
-                    <select name="spareparts[]" class="border rounded px-2 py-1 w-full">
-                        ${options}
-                    </select>
-                </div>
-                <div class="w-1/3">
-                    <label class="block text-sm font-medium mb-1">Quantity</label>
-                    <input type="number" name="quantities[]" class="border rounded px-2 py-1 w-full" value="${quantity}" min="1">
-                </div>
-                <div class="w-1/3">
-                    <label class="block text-sm font-medium mb-1">Unit Price</label>
-                    <input type="number" name="unit_prices[]" class="border rounded px-2 py-1 w-full" value="${unit_price}" min="1">
-                </div>
-                <div class="flex items-end">
-                    <button type="button" class="remove-row text-red-500 ml-2 mb-1">❌</button>
-                </div>
-            </div>
-            `;
-        }
+    //         return `
+    //         <div class="flex space-x-2 mb-4 sparepart-row items-start">
+    //             <div class="w-2/3">
+    //                 <label class="block text-sm font-medium mb-1">Sparepart</label>
+    //                 <select name="spareparts[]" class="border rounded px-2 py-1 w-full">
+    //                     ${options}
+    //                 </select>
+    //             </div>
+    //             <div class="w-1/3">
+    //                 <label class="block text-sm font-medium mb-1">Quantity</label>
+    //                 <input type="number" name="quantities[]" class="border rounded px-2 py-1 w-full" value="${quantity}" min="1">
+    //             </div>
+    //             <div class="w-1/3">
+    //                 <label class="block text-sm font-medium mb-1">Unit Price</label>
+    //                 <input type="number" name="unit_prices[]" class="border rounded px-2 py-1 w-full" value="${unit_price}" min="1">
+    //             </div>
+    //             <div class="flex items-end">
+    //                 <button type="button" class="remove-row text-red-500 ml-2 mb-1">❌</button>
+    //             </div>
+    //         </div>
+    //         `;
+    //     }
 
-        let sparepartsHTML = '';
-        selectedService.spareparts.forEach(sp => {
-            sparepartsHTML += generateSparepartRow(sp.pivot.sparepart_id, sp.pivot.quantity, sp.pivot.unit_price);
-        });
+    //     let sparepartsHTML = '';
+    //     selectedService.spareparts.forEach(sp => {
+    //         sparepartsHTML += generateSparepartRow(sp.pivot.sparepart_id, sp.pivot.quantity, sp.pivot.unit_price);
+    //     });
 
-        el.innerHTML +=`
-        <h2 class="text-lg font-bold mb-4">Edit</h2>
-        <form method="POST" action="{{ route('admin.service.edit') }}">
-            @csrf
-            <input type='hidden' name='service_id' value='${id}'>
-            <div class="mb-4">
-                <label class="block font-medium mb-1">Status</label>
-                <div class="flex items-center space-x-4">
-                    <label class="flex items-center space-x-1">
-                        <input type="radio" name="status" value="On Progress" 
-                            ${selectedService.status === 'On Progress' ? 'checked' : ''}>
-                        <span>On Progress</span>
-                    </label>
-                    <label class="flex items-center space-x-1">
-                        <input type="radio" name="status" value="Completed" 
-                            ${selectedService.status === 'Completed' ? 'checked' : ''}>
-                        <span>Completed</span>
-                    </label>
-                </div>
-            </div>
+    //     el.innerHTML +=`
+    //     <h2 class="text-lg font-bold mb-4">Edit</h2>
+    //     <form method="POST" action="{{ route('admin.service.edit') }}">
+    //         @csrf
+    //         <input type='hidden' name='service_id' value='${id}'>
+    //         <div class="mb-4">
+    //             <label class="block font-medium mb-1">Status</label>
+    //             <div class="flex items-center space-x-4">
+    //                 <label class="flex items-center space-x-1">
+    //                     <input type="radio" name="status" value="On Progress" 
+    //                         ${selectedService.status === 'On Progress' ? 'checked' : ''}>
+    //                     <span>On Progress</span>
+    //                 </label>
+    //                 <label class="flex items-center space-x-1">
+    //                     <input type="radio" name="status" value="Completed" 
+    //                         ${selectedService.status === 'Completed' ? 'checked' : ''}>
+    //                     <span>Completed</span>
+    //                 </label>
+    //             </div>
+    //         </div>
 
-            <div class="mb-4">
-                <label class="block font-medium mb-1">Spare Parts</label>
-                <div id="spareparts-container">
-                    ${sparepartsHTML}
-                </div>
-                <button type="button" id="addSparepartBtn"
-                    class="mt-2 text-blue-500 hover:underline">+ Add Spare Part</button>
-            </div>
+    //         <div class="mb-4">
+    //             <label class="block font-medium mb-1">Spare Parts</label>
+    //             <div id="spareparts-container">
+    //                 ${sparepartsHTML}
+    //             </div>
+    //             <button type="button" id="addSparepartBtn"
+    //                 class="mt-2 text-blue-500 hover:underline">+ Add Spare Part</button>
+    //         </div>
 
-            <div class="flex justify-end space-x-2">
-                <button type="button" id="closeModalBtn"
-                    class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Close</button>
-                <button type="submit"
-                    class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Add</button>
-            </div>
-        </form>
-        `
+    //         <div class="flex justify-end space-x-2">
+    //             <button type="button" id="closeModalBtn"
+    //                 class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Close</button>
+    //             <button type="submit"
+    //                 class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Add</button>
+    //         </div>
+    //     </form>
+    //     `
 
-        const modal = document.getElementById('editHistoryModal');
-        modal.classList.remove('hidden');
+    //     const modal = document.getElementById('editHistoryModal');
+    //     modal.classList.remove('hidden');
 
-        document.getElementById('closeModalBtn').addEventListener('click', () => {
-            modal.classList.add('hidden');
-        });
+    //     document.getElementById('closeModalBtn').addEventListener('click', () => {
+    //         modal.classList.add('hidden');
+    //     });
 
-        document.getElementById('addSparepartBtn').addEventListener('click', () => {
-            const container = document.getElementById('spareparts-container');
-            container.insertAdjacentHTML('beforeend', generateSparepartRow());
-        });
+    //     document.getElementById('addSparepartBtn').addEventListener('click', () => {
+    //         const container = document.getElementById('spareparts-container');
+    //         container.insertAdjacentHTML('beforeend', generateSparepartRow());
+    //     });
 
-        el.addEventListener('click', function (e) {
-            if (e.target.classList.contains('remove-row')) {
-                e.target.closest('.sparepart-row').remove();
-            }
-        });
-    }
+    //     el.addEventListener('click', function (e) {
+    //         if (e.target.classList.contains('remove-row')) {
+    //             e.target.closest('.sparepart-row').remove();
+    //         }
+    //     });
+    // }
 </script>
 @endsection

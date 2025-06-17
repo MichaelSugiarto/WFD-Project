@@ -22,6 +22,19 @@ class ServiceController extends Controller
 
         return view('admin.historyService', $data);
     }
+
+    public function index()
+    {
+        $services = Service::with(['vehicle.user', 'spareparts'])->where('status', 'On Progress')->get();
+
+        $data = [
+            'services' => $services,
+            'spareparts' => Sparepart::all(),
+            'title' => 'Booking List',
+        ];
+
+        return view('admin.allBooking', $data);
+    }
     public function edit(Request $request)
     {
         $spareparts = $request->input('spareparts', []);
