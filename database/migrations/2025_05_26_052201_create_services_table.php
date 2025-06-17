@@ -16,6 +16,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('description');
             $table->string('status');
+            $table->date('appointment_date')->nullable();
             $table->date('start_date');
             $table->date('end_date')->nullable();
             $table->decimal('total_cost', 10, 2)->default(0);
@@ -35,4 +36,3 @@ return new class extends Migration
         Schema::dropIfExists('services');
     }
 };
-

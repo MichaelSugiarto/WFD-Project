@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Booking;
+use App\Models\Service;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -22,35 +23,65 @@ class UserController extends Controller
         ]);
     }
 
-    public function storeBooking(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:20',
-            'vehicle_make' => 'required|string|max:255',
-            'vehicle_model' => 'required|string|max:255',
-            'service_type' => 'required|string|max:255',
-            'appointment_date' => 'required|date|after_or_equal:today',
-            'notes' => 'nullable|string'
-        ]);
-
-        try {
-            Booking::create($validated);
-            return redirect()->route('user.history')->with('success', 'Booking created successfully!');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Failed to create booking. Please try again.')->withInput();
-        }
-    }
-
     public function history()
     {
-        $bookings = Booking::orderBy('appointment_date', 'desc')->get();
+        $services = Service::with(['vehicle' => function($query) {
+                $query->where('user_id', auth()->id());
+            }])
+            ->whereHas('vehicle', function($query) {
+                $query->where('user_id', auth()->id());
+            })
+            ->orderBy('appointment_date', 'desc')
+            ->get();
+
+        $upcomingAppointments = $services->filter(function($service) {
+            return $service->appointment_date && Carbon::parse($service->appointment_date)->isFuture();
+        })->values();
         
+        $pastAppointments = $services->filter(function($service) {
+            return $service->appointment_date && Carbon::parse($service->appointment_date)->isPast();
+        })->values();
+
         return view('user.history', [
             'title' => 'Service History',
-            'upcomingAppointments' => $bookings->where('appointment_date', '>=', now()),
-            'pastAppointments' => $bookings->where('appointment_date', '<', now())
+            'upcomingAppointments' => $upcomingAppointments,
+            'pastAppointments' => $pastAppointments,
+            'searchTerm' => request('license_plate')
         ]);
     }
+
+    public function historySearch(Request $request)
+    {
+        $licensePlate = trim($request->input('license_plate'));
+        $normalizedSearchTerm = strtoupper(str_replace(' ', '', $licensePlate));
+
+        $services = Service::whereHas('vehicle', function ($query) use ($normalizedSearchTerm) {
+                $query->where('user_id', auth()->id())
+                    ->whereRaw("REPLACE(UPPER(license_plate), ' ', '') LIKE ?", ["%$normalizedSearchTerm%"]);
+            })
+            ->with(['vehicle' => function($query) {
+                $query->where('user_id', auth()->id());
+            }])
+            ->orderBy('appointment_date', 'desc')
+            ->get();
+
+        $upcomingAppointments = $services->filter(function($service) {
+            return $service->appointment_date && Carbon::parse($service->appointment_date)->isFuture();
+        })->values();
+        
+        $pastAppointments = $services->filter(function($service) {
+            return $service->appointment_date && Carbon::parse($service->appointment_date)->isPast();
+        })->values();
+
+        return view('user.appointments', [
+            'upcomingAppointments' => $upcomingAppointments,
+            'pastAppointments' => $pastAppointments,
+            'searchTerm' => $licensePlate
+        ]);
+    }
+
+
+
+
+    
 }

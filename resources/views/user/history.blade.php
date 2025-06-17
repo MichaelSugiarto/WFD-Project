@@ -74,6 +74,24 @@
     .status-cancelled {
         color: #EF4444;
     }
+    
+    .search-container {
+        position: relative;
+        max-width: 500px;
+        margin: 0 auto 30px;
+    }
+    
+    .search-input {
+        padding-right: 40px;
+    }
+    
+    .search-icon {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6B7280;
+    }
 </style>
 
 <section class="history-header">
@@ -85,13 +103,73 @@
     </div>
 </section>
 
-<section class="history-section py-20">
-    <div class="container mx-auto px-4">
-        <div class="mb-10 flex justify-between items-center">
-            <h2 class="font-cinzel text-3xl">Your Appointments</h2>
-            <a href="{{ route('user.book') }}" class="btn-gold py-2 px-6 rounded font-montserrat">Book New Service</a>
+<section class="history-section py-12">
+    <div class="container mx-auto px-4 py-12">
+        <div class="mb-8">
+            <form id="searchForm" action="{{ route('user.history.search') }}" method="GET">
+                <div class="relative max-w-md mx-auto">
+                    <input type="text" id="searchInput" name="license_plate" placeholder="Search by license plate..." 
+                        class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-gold pl-4 pr-10"
+                        value="{{ request('license_plate') }}"
+                        autocomplete="off">
+                    <button type="submit" class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </button>
+                </div>
+            </form>
         </div>
+
+        <div id="servicesContainer" class="bg-white rounded-lg shadow p-6">
+            @include('user.appointments')
+        </div>
+
     </div>
 </section>
+
+<script>
+    $(document).ready(function() {
+        $('#searchForm').on('submit', function(e) {
+            e.preventDefault();
+            const licensePlate = $('#searchInput').val().trim();
+            
+            if (licensePlate === '') {
+                window.location.href = "{{ route('user.history') }}";
+                return;
+            }
+
+            $.ajax({
+                url: $(this).attr('action'),
+                method: 'GET',
+                data: { license_plate: licensePlate },
+                success: function(data) {
+                    $('#servicesContainer').html(data);
+                    history.pushState(null, '', "{{ route('user.history') }}?license_plate=" + encodeURIComponent(licensePlate));
+                },
+                error: function(xhr) {
+                    console.error("AJAX ERROR:", xhr.status, xhr.responseText);
+                    $('#servicesContainer').html('<p class="text-center py-12 font-cormorant text-lg">Error loading results. Please try again.</p>');
+                }
+            });
+        });
+
+        window.onpopstate = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const licensePlate = urlParams.get('license_plate');
+            
+            $('#searchInput').val(licensePlate || '');
+            if (licensePlate) {
+                $('#searchForm').submit();
+            } else {
+                window.location.href = "{{ route('user.history') }}";
+            }
+        };
+
+        @if(request('license_plate'))
+            $('#searchForm').submit();
+        @endif
+    });
+</script>
 
 @endsection

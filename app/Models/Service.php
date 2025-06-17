@@ -3,17 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Concerns\HasUuids; // Import the HasUuids trait
-use Illuminate\Database\Eloquent\Factories\HasFactory; // Good practice for factories
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Service extends Model
 {
-    use HasFactory, HasUuids; // Use HasFactory and HasUuids
+    use HasFactory, HasUuids;
 
-    // Indicate that the primary key is not auto-incrementing
     public $incrementing = false;
-
-    // Specify the type of the primary key as 'string' for UUIDs
     protected $keyType = 'string';
 
     /**
@@ -22,13 +19,15 @@ class Service extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'id', // Include 'id' if you're setting it manually (e.g., in seeders)
+        'id',
         'description',
         'status',
         'start_date',
         'end_date',
         'total_cost',
-        'vehicle_id', // Make sure vehicle_id is fillable
+        'vehicle_id',
+        'appointment_date', 
+        'notes',           
     ];
 
     /**

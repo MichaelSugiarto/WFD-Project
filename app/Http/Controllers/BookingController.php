@@ -9,6 +9,7 @@ use App\Models\Vehicle;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
@@ -37,44 +38,52 @@ class BookingController extends Controller
             'vehicle_brand' => 'required|string|max:255',
             'license_plate' => 'required|string|max:255',
             'service_type' => 'required|string|max:255',
-            'appointment_date' => 'required|date',
+            'appointment_date' => 'required|date|after_or_equal:today',
             'notes' => 'nullable|string',
         ]);
 
         $validated['appointment_date'] = Carbon::parse($validated['appointment_date']);
 
-        // 1. Create or retrieve User
-        // You might want to check if a user with this email already exists
-        $user = User::firstOrCreate(
-            ['email' => $validated['email']],
-            [
+        if (Auth::check()) {
+            $user = Auth::user();
+            $user->update([
                 'name' => $validated['name'],
-                'password' => bcrypt(Str::random(10)), // Generate a random password
                 'telephone_number' => $validated['phone'],
-                'address' => $validated['address'], // Assuming address is nullable or will be added later
+                'address' => $validated['address'],
+            ]);
+        } else {
+            $user = User::firstOrCreate(
+                ['email' => $validated['email']],
+                [
+                    'name' => $validated['name'],
+                    'password' => bcrypt(Str::random(10)),
+                    'telephone_number' => $validated['phone'],
+                    'address' => $validated['address'],
+                ]
+            );
+        }
+
+       $normalizedLicensePlate = strtoupper(str_replace(' ', '', $validated['license_plate']));
+
+        $vehicle = Vehicle::firstOrCreate(
+            ['license_plate' => $normalizedLicensePlate, 'user_id' => $user->id],
+            [
+                'brand' => $validated['vehicle_brand'],
+                'model' => $validated['vehicle_model'],
+                'year_production' => $validated['vehicle_year_production'],
             ]
         );
 
-        // 2. Create Vehicle
-        $vehicle = Vehicle::create([
-            'license_plate' => $validated['license_plate'],
-            'brand' => $validated['vehicle_brand'],
-            'model' => $validated['vehicle_model'],
-            'year_production' => $validated['vehicle_year_production'],
-            'user_id' => $user->id,
-        ]);
-
-        // 3. Create Service
         $service = Service::create([
             'description' => $validated['service_type'],
-            'status' => 'On Going', // As per your requirement
+            'status' => 'On Going',
             'start_date' => Carbon::now(),
-            'appointment_date' => $validated['appointment_date'], // Added appointment_date to service
-            'notes' => $validated['notes'], // Add notes to service
+            'appointment_date' => $validated['appointment_date'],
+            'notes' => $validated['notes'],
             'vehicle_id' => $vehicle->id,
         ]);
-        
 
         return redirect()->route('user.history')->with('success', 'Booking berhasil dibuat!');
     }
+
 }
