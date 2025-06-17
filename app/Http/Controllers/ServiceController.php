@@ -12,7 +12,9 @@ class ServiceController extends Controller
 {
     public function view()
     {
-        $services = Service::with(['vehicle.user', 'spareparts'])->get();
+        $services = Service::with(['vehicle.user', 'spareparts'])
+        ->where('status', 'Completed') // Added this line
+        ->get();
 
         $data = [
             'services' => $services,
