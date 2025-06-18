@@ -74,7 +74,7 @@
 <div id="editAdminModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-[1100]">
     <div class="bg-white rounded-lg shadow-lg p-6 w-96 relative">
         <h2 class="text-lg font-bold mb-4">Add Admin</h2>
-        <form method="POST" action="{{ route('admin.updateAdmin') }}">
+        <form onsubmit="disableButton(this)" method="POST" action="{{ route('admin.updateAdmin') }}">
             @csrf
             <input id="id_edit" name="id" type="text" hidden>
             <div class="mb-4">
@@ -218,6 +218,7 @@
             }
         }).then((result) => {
             if (result.isConfirmed) {
+                element.disabled = true;
                 $.ajax({
                     type: 'POST',
                     url: "{{ route('admin.deleteAdmin') }}",
@@ -299,5 +300,18 @@
             }
         });
     }
+</script>
+<script>
+  function disableButton(form) {
+        // Find the submit button inside the form
+        const button = form.querySelector('button[type="submit"]');
+        if (button) {
+            button.disabled = true;
+            button.innerText = "Submitting..."; // Optional: change text
+        }
+
+        // Allow the form to continue submitting
+        return true;
+  }
 </script>
 @endsection
