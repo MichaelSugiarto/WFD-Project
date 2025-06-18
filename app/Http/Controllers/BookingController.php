@@ -33,13 +33,12 @@ class BookingController extends Controller
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:20',
             'address' => 'required|string|max:20',
+            'appointment_date' => 'required',
             'vehicle_model' => 'required|string|max:255',
             'vehicle_year_production' => 'required|string|max:255',
             'vehicle_brand' => 'required|string|max:255',
             'license_plate' => 'required|string|max:255',
             'service_type' => 'required|string|max:255',
-            'appointment_date' => 'required|date|after_or_equal:today',
-            'notes' => 'nullable|string',
         ]);
 
         $validated['appointment_date'] = Carbon::parse($validated['appointment_date']);
@@ -76,10 +75,8 @@ class BookingController extends Controller
 
         $service = Service::create([
             'description' => $validated['service_type'],
-            'status' => 'On Going',
-            'start_date' => Carbon::now(),
-            'appointment_date' => $validated['appointment_date'],
-            'notes' => $validated['notes'],
+            'status' => 'On Progress',
+            'start_date' => $validated['appointment_date'],
             'vehicle_id' => $vehicle->id,
         ]);
 

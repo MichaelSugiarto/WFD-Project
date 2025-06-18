@@ -26,8 +26,6 @@ class Service extends Model
         'end_date',
         'total_cost',
         'vehicle_id',
-        'appointment_date', 
-        'notes',           
     ];
 
     /**

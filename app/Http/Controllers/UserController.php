@@ -25,30 +25,38 @@ class UserController extends Controller
 
     public function history()
     {
-        $services = Service::with(['vehicle' => function($query) {
-                $query->where('user_id', auth()->id());
-            }])
-            ->whereHas('vehicle', function($query) {
-                $query->where('user_id', auth()->id());
-            })
-            ->orderBy('appointment_date', 'desc')
-            ->get();
-
-        $upcomingAppointments = $services->filter(function($service) {
-            return $service->appointment_date && Carbon::parse($service->appointment_date)->isFuture();
-        })->values();
+        $licensePlate = str_replace(' ', '', request('license_plate'));
         
-        $pastAppointments = $services->filter(function($service) {
-            return $service->appointment_date && Carbon::parse($service->appointment_date)->isPast();
-        })->values();
+        if ($licensePlate) {
+            $services = Service::with(['vehicle'])
+            ->whereHas('vehicle', function ($query) use ($licensePlate) {
+                $query->whereRaw("REPLACE(license_plate, ' ', '') LIKE ?", ["%{$licensePlate}%"]);
+            })
+            ->orderBy('start_date', 'desc')
+            ->get();
+            
+            $upcomingAppointments = $services->filter(function ($service) {
+                return $service->start_date && Carbon::parse($service->start_date)->isFuture();
+            })->values();
+            foreach ($upcomingAppointments as $u){
+                $u->status = 'Waiting';
+            }
+            // dd($upcomingAppointments);
+            
+            $pastAppointments = $services->filter(function ($service) {
+                return $service->start_date && Carbon::parse($service->start_date)->isPast();
+            })->values();
+        }
+        // dd($pastAppointments);
 
         return view('user.history', [
             'title' => 'Service History',
-            'upcomingAppointments' => $upcomingAppointments,
-            'pastAppointments' => $pastAppointments,
-            'searchTerm' => request('license_plate')
+            'upcomingAppointments' => $upcomingAppointments ?? collect(),
+            'pastAppointments' => $pastAppointments ?? collect(),
+            'searchTerm' => $licensePlate,
         ]);
     }
+
 
     public function historySearch(Request $request)
     {
@@ -62,7 +70,7 @@ class UserController extends Controller
             ->with(['vehicle' => function($query) {
                 $query->where('user_id', auth()->id());
             }])
-            ->orderBy('appointment_date', 'desc')
+            ->orderBy('start_date', 'desc')
             ->get();
 
         $upcomingAppointments = $services->filter(function($service) {

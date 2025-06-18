@@ -139,19 +139,19 @@
                 return;
             }
 
-            $.ajax({
-                url: $(this).attr('action'),
-                method: 'GET',
-                data: { license_plate: licensePlate },
-                success: function(data) {
-                    $('#servicesContainer').html(data);
+            // $.ajax({
+            //     url: $(this).attr('action'),
+            //     method: 'GET',
+            //     data: { license_plate: licensePlate },
+            //     success: function(data) {
                     history.pushState(null, '', "{{ route('user.history') }}?license_plate=" + encodeURIComponent(licensePlate));
-                },
-                error: function(xhr) {
-                    console.error("AJAX ERROR:", xhr.status, xhr.responseText);
-                    $('#servicesContainer').html('<p class="text-center py-12 font-cormorant text-lg">Error loading results. Please try again.</p>');
-                }
-            });
+                    window.location.reload();
+            //     },
+            //     error: function(xhr) {
+            //         console.error("AJAX ERROR:", xhr.status, xhr.responseText);
+            //         $('#servicesContainer').html('<p class="text-center py-12 font-cormorant text-lg">Error loading results. Please try again.</p>');
+            //     }
+            // });
         });
 
         window.onpopstate = function() {
@@ -166,9 +166,6 @@
             }
         };
 
-        @if(request('license_plate'))
-            $('#searchForm').submit();
-        @endif
     });
 </script>
 
