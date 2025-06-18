@@ -26,28 +26,27 @@ class UserController extends Controller
     public function history()
     {
         $licensePlate = str_replace(' ', '', request('license_plate'));
-        
+
         if ($licensePlate) {
             $services = Service::with(['vehicle'])
-            ->whereHas('vehicle', function ($query) use ($licensePlate) {
-                $query->whereRaw("REPLACE(license_plate, ' ', '') LIKE ?", ["%{$licensePlate}%"]);
-            })
-            ->orderBy('start_date', 'desc')
-            ->get();
-            
+                ->whereHas('vehicle', function ($query) use ($licensePlate) {
+                    $query->whereRaw("REPLACE(license_plate, ' ', '') = ?", [$licensePlate]);
+                })
+                ->orderBy('start_date', 'desc')
+                ->get();
+
             $upcomingAppointments = $services->filter(function ($service) {
                 return $service->start_date && Carbon::parse($service->start_date)->isFuture();
             })->values();
-            foreach ($upcomingAppointments as $u){
+
+            foreach ($upcomingAppointments as $u) {
                 $u->status = 'Waiting';
             }
-            // dd($upcomingAppointments);
-            
+
             $pastAppointments = $services->filter(function ($service) {
                 return $service->start_date && Carbon::parse($service->start_date)->isPast();
             })->values();
         }
-        // dd($pastAppointments);
 
         return view('user.history', [
             'title' => 'Service History',
@@ -56,6 +55,7 @@ class UserController extends Controller
             'searchTerm' => $licensePlate,
         ]);
     }
+
 
 
     public function historySearch(Request $request)
