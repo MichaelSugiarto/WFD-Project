@@ -32,6 +32,7 @@ class AuthController extends Controller
         $admin = Admin::with(['role'])->where('email', $user->email)->first();
 
         if($admin){
+            session()->put('id', $admin->id);
             session()->put('email', $admin->email);
             session()->put('name', $admin->name);
             session()->put('role', $admin->role->name);

@@ -17,7 +17,7 @@ class AdminLoginMiddleware
     {
         if(!(session('email') && session('role'))){
             $request->session()->put('url.intended', $request->fullUrl());
-            return redirect()->route('admin.login')->with('invalidLogin', 'Please Login First');
+            return redirect()->route('admin.login')->with('invalidLogin', 'Please Login Again');
         }
         return $next($request);
     }

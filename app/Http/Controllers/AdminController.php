@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\Admin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -98,7 +99,24 @@ class AdminController extends Controller
         $admin->role_id = $role;
         $admin->save();
 
+        $this->removeUserSessions($admin->id);
+
         return redirect()->back()->with('success', 'Admin edited successfully!');
+    }
+
+    protected function removeUserSessions($userId)
+    {
+        // Find sessions where the user_id matches
+        $sessions = DB::table('sessions')->get();
+
+        foreach ($sessions as $session) {
+            $data = unserialize(base64_decode($session->payload));
+
+            // Check if this session belongs to the user
+            if (isset($data['id']) && $data['id'] == $userId) {
+                DB::table('sessions')->where('id', $session->id)->delete();
+            }
+        }
     }
 
     /**
